@@ -59,12 +59,22 @@ client.on(Events.InteractionCreate, async interaction => {
 
   if (interaction.commandName === 'schedule')
   {
-      await interaction.reply({
-          embeds: [
-              GetCurrentSchedule(),
-              GetNextSchedule() // Add this line to include the next schedule
-          ]
-      });
+      const currentSchedule = GetCurrentSchedule();
+      const nextSchedule = GetNextSchedule();
+
+      // Only include valid embeds
+      const embeds = [];
+      if (currentSchedule) embeds.push(currentSchedule);
+      if (nextSchedule) embeds.push(nextSchedule);
+
+      if (embeds.length === 0) {
+        await interaction.reply({
+          content: "No schedule available at the moment.",
+          ephemeral: true
+        });
+      } else {
+        await interaction.reply({ embeds });
+      }
   }
   if (interaction.commandName === "laro")
   {
